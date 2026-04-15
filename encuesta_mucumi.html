@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Encuesta Raíces de Maíz - Mucumí</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;600;800&display=swap" rel="stylesheet">
+    <style>
+        body { font-family: 'Outfit', sans-serif; background-color: #fefce8; -webkit-tap-highlight-color: transparent; }
+        .corn-gradient { background: linear-gradient(135deg, #f59e0b 0%, #d97706 100%); }
+        .card-shadow { box-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.1), 0 10px 10px -5px rgba(0, 0, 0, 0.04); }
+        .option-active { border-color: #059669; background-color: #ecfdf5; color: #065f46; transform: translateY(-2px); box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1); }
+        .step-transition { transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1); }
+    </style>
+</head>
+<body class="min-h-screen pb-12">
+
+    <header class="corn-gradient text-white pt-12 pb-20 px-6 rounded-b-[3.5rem] shadow-xl text-center relative overflow-hidden">
+        <div class="absolute top-0 right-0 opacity-10">
+            <svg width="200" height="200" viewBox="0 0 24 24" fill="currentColor"><path d="M17,8C17,11 15,16 12,22C9,16 7,11 7,8C7,4 10,2 12,2C14,2 17,4 17,8Z"/></svg>
+        </div>
+        <div class="relative z-10 flex flex-col items-center">
+            <div class="bg-white/20 p-4 rounded-full mb-4 backdrop-blur-md border border-white/30 shadow-inner">
+                <svg width="42" height="42" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C10.5 2 8 4.5 8 8C8 11.5 10 16 12 22C14 16 16 11.5 16 8C16 4.5 13.5 2 12 2Z" fill="#FCD34D" stroke="#92400E" stroke-width="1.2"/>
+                    <path d="M8 8C5 8 3 11 3 15C3 19 6 21 8 21" stroke="#166534" stroke-width="2.5" stroke-linecap="round"/>
+                    <path d="M16 8C19 8 21 11 21 15C21 19 18 21 16 21" stroke="#166534" stroke-width="2.5" stroke-linecap="round"/>
+                </svg>
+            </div>
+            <h1 class="text-3xl font-black tracking-tight mb-1 uppercase">Semilla de Nuestro Pueblo</h1>
+            <div class="flex items-center gap-2 text-yellow-100 font-medium bg-black/10 px-4 py-1 rounded-full text-sm">
+                <span>📍 Mucumí, Edo. Mérida</span>
+            </div>
+        </div>
+    </header>
+
+    <main class="max-w-xl mx-auto px-4 -mt-10 relative z-20">
+        <div class="flex gap-2 mb-6" id="progress-bar">
+            <div class="h-2.5 flex-1 rounded-full bg-green-600 shadow-sm transition-all duration-500"></div>
+            <div class="h-2.5 flex-1 rounded-full bg-white/60 shadow-sm transition-all duration-500"></div>
+            <div class="h-2.5 flex-1 rounded-full bg-white/60 shadow-sm transition-all duration-500"></div>
+        </div>
+
+        <div id="survey-card" class="bg-white rounded-[3rem] p-8 card-shadow border border-yellow-100 step-transition">
+            <div id="content-area"></div>
+        </div>
+
+        <div class="flex gap-4 mt-8" id="nav-controls">
+            <button id="btn-prev" class="hidden flex-1 bg-white border-2 border-yellow-500 text-yellow-700 font-bold py-4 rounded-2xl active:scale-95 transition-transform">Anterior</button>
+            <button id="btn-next" class="flex-[2] bg-yellow-600 text-white font-bold py-4 rounded-2xl shadow-lg shadow-yellow-200 active:scale-95 transition-transform flex items-center justify-center gap-2">
+                <span>Siguiente</span>
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg>
+            </button>
+        </div>
+
+        <footer class="mt-12 text-center opacity-40">
+            <p class="text-xs italic font-medium text-amber-900">"Rescatando nuestra herencia, un grano a la vez"</p>
+        </footer>
+    </main>
+
+    <script>
+        // CONFIGURACIÓN: Cambia este número por el WhatsApp que recibirá los datos
+        const WHATSAPP_NUMBER = "584120000000"; 
+
+        const surveySteps = [
+            {
+                title: "Identidad y Tradición",
+                icon: "🌾",
+                questions: [
+                    { id: 'importancia', label: "¿Qué tan importante es el maíz para la identidad cultural de Mucumí?", options: ["Nada importante", "Poco importante", "Neutral", "Importante", "Esencial"] },
+                    { id: 'consumo', label: "¿Qué tan seguido consume platos tradicionales (chicha, arepas)?", options: ["Diariamente", "Semanalmente", "Mensualmente", "Casi nunca"] }
+                ]
+            },
+            {
+                title: "Soberanía Alimentaria",
+                icon: "🌱",
+                questions: [
+                    { id: 'dificultad', label: "¿Cómo le afecta la dificultad para conseguir maíz asequible?", options: ["No me afecta", "Poco", "Mucho", "Situación crítica"] },
+                    { id: 'participacion', label: "¿Estaría dispuesto a participar en la siembra comunitaria?", options: ["Sí, trabajando", "Apoyo logístico", "Solo comprador", "No puedo"] }
+                ]
+            },
+            {
+                title: "Datos Finales",
+                icon: "👤",
+                questions: [
+                    { id: 'nombre', label: "¿Cuál es su nombre? (Opcional)", type: "text" },
+                    { id: 'enseñanza', label: "¿Cree necesario enseñar esto a las nuevas generaciones?", options: ["Es urgente", "Es importante", "Es opcional", "No es necesario"] }
+                ]
+            }
+        ];
+
+        let currentStep = 0;
+        const answers = {};
+
+        function render() {
+            const step = surveySteps[currentStep];
+            const content = document.getElementById('content-area');
+            const progress = document.getElementById('progress-bar').children;
+
+            for(let i=0; i<3; i++) {
+                progress[i].className = `h-2.5 flex-1 rounded-full transition-all duration-500 ${i <= currentStep ? 'bg-green-600 shadow-sm' : 'bg-gray-200'}`;
+            }
+
+            let html = `
+                <div class="flex items-center gap-3 mb-8">
+                    <span class="text-2xl">${step.icon}</span>
+                    <h2 class="text-2xl font-black text-amber-900 uppercase tracking-tight">${step.title}</h2>
+                </div>
+            `;
+
+            step.questions.forEach(q => {
+                html += `<div class="mb-10"><label class="block font-bold text-gray-800 mb-5 text-lg">${q.label}</label>`;
+                
+                if (q.type === "text") {
+                    html += `<input type="text" oninput="answers['${q.id}'] = this.value" value="${answers[q.id] || ''}" class="w-full p-4 rounded-2xl border-2 border-yellow-200 focus:border-green-500 outline-none font-bold" placeholder="Escriba aquí...">`;
+                } else {
+                    html += `<div class="grid gap-3">
+                        ${q.options.map(opt => {
+                            const active = answers[q.id] === opt ? 'option-active' : 'border-gray-100 text-gray-600';
+                            return `<button onclick="selectOption('${q.id}', '${opt}')" class="text-left p-4 rounded-2xl border-2 font-bold transition-all duration-200 ${active}">
+                                <div class="flex items-center gap-3">
+                                    <div class="w-5 h-5 rounded-full border-2 ${answers[q.id] === opt ? 'border-green-600 bg-green-600' : 'border-gray-300'}"></div>
+                                    <span>${opt}</span>
+                                </div>
+                            </button>`;
+                        }).join('')}
+                    </div>`;
+                }
+                html += `</div>`;
+            });
+
+            content.innerHTML = html;
+            document.getElementById('btn-prev').style.display = currentStep === 0 ? 'none' : 'block';
+            document.getElementById('btn-next').querySelector('span').innerText = currentStep === 2 ? 'Finalizar' : 'Siguiente';
+        }
+
+        window.selectOption = (id, val) => { answers[id] = val; render(); };
+
+        document.getElementById('btn-next').onclick = () => {
+            if (currentStep < 2) { 
+                currentStep++; 
+                render(); 
+                window.scrollTo(0, 0); 
+            } else { 
+                showSuccess(); 
+            }
+        };
+
+        document.getElementById('btn-prev').onclick = () => { currentStep--; render(); };
+
+        function showSuccess() {
+            document.getElementById('nav-controls').classList.add('hidden');
+            document.getElementById('progress-bar').classList.add('hidden');
+            
+            document.getElementById('content-area').innerHTML = `
+                <div class="text-center py-4">
+                    <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-6">
+                        <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="3"><path d="M20 6L9 17l-5-5"/></svg>
+                    </div>
+                    <h2 class="text-2xl font-black text-gray-800 mb-2">¡LISTO PARA ENVIAR!</h2>
+                    <p class="text-gray-600 mb-8">Selecciona cómo deseas entregar tus respuestas:</p>
+                    
+                    <button onclick="sendWhatsApp()" class="w-full bg-[#25D366] text-white font-black py-5 rounded-[2rem] shadow-xl hover:scale-105 transition-transform flex items-center justify-center gap-3 mb-4">
+                        <svg width="24" height="24" fill="currentColor" viewBox="0 0 24 24"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L0 24l6.335-1.662c1.72.94 3.675 1.439 5.662 1.439h.005c6.554 0 11.89-5.335 11.893-11.892a11.826 11.826 0 00-3.48-8.413z"/></svg>
+                        ENVIAR POR WHATSAPP
+                    </button>
+
+                    <button onclick="downloadData()" class="w-full bg-gray-800 text-white font-bold py-4 rounded-2xl flex items-center justify-center gap-2 opacity-80">
+                        Descargar Reporte (.txt)
+                    </button>
+                    
+                    <button onclick="location.reload()" class="mt-6 text-amber-800 font-bold block w-full text-center">Hacer otra encuesta</button>
+                </div>
+            `;
+        }
+
+        function generateTextMessage() {
+            const id = Math.floor(1000 + Math.random() * 9000);
+            let text = `🌽 *ENCUESTA MUCUMÍ #${id}*\n`;
+            text += `*Nombre:* ${answers['nombre'] || 'Anónimo'}\n`;
+            text += `--------------------------\n`;
+            text += `*Importancia:* ${answers['importancia']}\n`;
+            text += `*Consumo:* ${answers['consumo']}\n`;
+            text += `*Afectación Económica:* ${answers['dificultad']}\n`;
+            text += `*Siembra Comunitaria:* ${answers['participacion']}\n`;
+            text += `*Educación:* ${answers['enseñanza']}\n`;
+            text += `--------------------------\n`;
+            text += `_Enviado desde el portal Raíces de Maíz_`;
+            return text;
+        }
+
+        window.sendWhatsApp = () => {
+            const message = encodeURIComponent(generateTextMessage());
+            window.open(`https://wa.me/${WHATSAPP_NUMBER}?text=${message}`, '_blank');
+        };
+
+        window.downloadData = () => {
+            const blob = new Blob([generateTextMessage().replace(/\*/g, '')], {type: 'text/plain'});
+            const a = document.createElement('a');
+            a.href = URL.createObjectURL(blob);
+            a.download = `Encuesta_Mucumi.txt`;
+            a.click();
+        };
+
+        render();
+    </script>
+</body>
+</html>
